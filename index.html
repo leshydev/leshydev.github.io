@@ -5,25 +5,23 @@
     <title>Dictionary</title>
 </head>
 <body>
-<input id="sourceText" value="Hello" />
+<input id="sourceText" placeholder="Text to translate" />
 <div id="translation"></div>
+<button onclick="translateText()">Translate</button>
 <script>
     function translateText(response) {
-        document.getElementById("translation").innerHTML += "<br>" + response.data.translations[0].translatedText;
+        var r = new XMLHttpRequest();
+        var source = 'https://www.googleapis.com/language/translate/v2';
+        var sourceText = document.getElementById('sourceText').value;
+        var params = 'key=AIzaSyDMLdOKx62J7-k13xO3TpN6YEhclb9XbMs&source=en&target=ru&q=' + sourceText;
+        r.open("GET", source + '?' + params, true);
+        r.onreadystatechange = function () {
+            if (r.readyState != 4 || r.status != 200) return;
+            var translation = JSON.parse(r.response).data.translations[0];
+            document.getElementById('translation').innerHTML = translation.translatedText;
+        };
+        r.send();
     }
-</script>
-<script>
-    var r = new XMLHttpRequest();
-    var source = 'https://www.googleapis.com/language/translate/v2';
-    var sourceText = document.getElementById('sourceText').value;
-    var params = 'key=AIzaSyDMLdOKx62J7-k13xO3TpN6YEhclb9XbMs&source=en&target=ru&q=' + sourceText;
-    r.open("GET", source + '?' + params, true);
-    r.onreadystatechange = function () {
-        if (r.readyState != 4 || r.status != 200) return;
-        var translation = JSON.parse(r.response).data.translations[0];
-        document.getElementById('translation').innerHTML = translation.translatedText;
-    };
-    r.send();
 </script>
 </body>
 </html>
